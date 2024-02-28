@@ -34,7 +34,7 @@ import static com.cbh.ojbackenduserservice.service.impl.UserServiceImpl.SALT;
  * @from cbh
  */
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/")
 @Slf4j
 public class UserController {
 
