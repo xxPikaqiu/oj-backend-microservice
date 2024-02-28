@@ -59,3 +59,6 @@ mybatis-plus:
 # 代码沙箱配置
 codeSandbox:
   type: remote
+
+knife4j:
+  enable: true
