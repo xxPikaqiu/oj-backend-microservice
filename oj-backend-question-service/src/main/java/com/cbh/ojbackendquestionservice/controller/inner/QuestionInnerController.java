@@ -13,7 +13,8 @@ import javax.annotation.Resource;
 /**
  * 该服务仅内部调用，不是给前端的
  */
-@RestController("/inner")
+@RestController
+@RequestMapping("/inner")
 public class QuestionInnerController implements QuestionFeignClient {
 
     @Resource

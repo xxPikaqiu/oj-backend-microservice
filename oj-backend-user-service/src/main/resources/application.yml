@@ -33,9 +33,14 @@ spring:
     multipart:
       # 大小限制
       max-file-size: 10MB
+  cloud:
+    # nacos 配置
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
 server:
   address: 0.0.0.0
-  port: 8801
+  port: 8802
   servlet:
     context-path: /api/user
     # cookie 30 天过期
