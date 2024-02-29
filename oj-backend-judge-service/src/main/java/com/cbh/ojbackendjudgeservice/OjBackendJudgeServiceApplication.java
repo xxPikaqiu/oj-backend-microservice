@@ -1,5 +1,6 @@
 package com.cbh.ojbackendjudgeservice;
 
+import com.cbh.ojbackendjudgeservice.rabbitmq.InitRabbitMq;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
@@ -17,7 +18,9 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableFeignClients(basePackages = {"com.cbh.ojbackendserviceclient.service"})
 public class OjBackendJudgeServiceApplication {
 
+
     public static void main(String[] args) {
+        InitRabbitMq.doInit();
         SpringApplication.run(OjBackendJudgeServiceApplication.class, args);
     }
 

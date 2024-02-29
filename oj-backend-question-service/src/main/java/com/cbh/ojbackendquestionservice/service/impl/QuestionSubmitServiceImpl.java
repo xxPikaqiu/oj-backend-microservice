@@ -16,6 +16,7 @@ import com.cbh.ojbackendmodel.model.enums.QuestionSubmitLanguageEnum;
 import com.cbh.ojbackendmodel.model.enums.QuestionSubmitStatusEnum;
 import com.cbh.ojbackendmodel.model.vo.QuestionSubmitVO;
 import com.cbh.ojbackendquestionservice.mapper.QuestionSubmitMapper;
+import com.cbh.ojbackendquestionservice.rabbitmq.MyMessageProducer;
 import com.cbh.ojbackendquestionservice.service.JudgeService;
 import com.cbh.ojbackendquestionservice.service.QuestionService;
 import com.cbh.ojbackendquestionservice.service.QuestionSubmitService;
@@ -33,13 +34,13 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 /**
-* @author xxPikaqiu
-* @description 针对表【question_submit(题目提交)】的数据库操作Service实现
-* @createDate 2024-01-04 10:27:48
-*/
+ * @author xxPikaqiu
+ * @description 针对表【question_submit(题目提交)】的数据库操作Service实现
+ * @createDate 2024-01-04 10:27:48
+ */
 @Service
 public class QuestionSubmitServiceImpl extends ServiceImpl<QuestionSubmitMapper, QuestionSubmit>
-    implements QuestionSubmitService {
+        implements QuestionSubmitService {
     @Resource
     private QuestionService questionService;
 
@@ -49,6 +50,9 @@ public class QuestionSubmitServiceImpl extends ServiceImpl<QuestionSubmitMapper,
     @Resource
     @Lazy
     private JudgeFeignClient judgeFeignClient;
+
+    @Resource
+    private MyMessageProducer myMessageProducer;
 
 
     /**
@@ -84,14 +88,16 @@ public class QuestionSubmitServiceImpl extends ServiceImpl<QuestionSubmitMapper,
         questionSubmit.setStatus(QuestionSubmitStatusEnum.WAITING.getValue());
         questionSubmit.setJudgeInfo("{}");
         boolean save = this.save(questionSubmit);
-        if (!save){
+        if (!save) {
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "数据插入失败");
         }
         Long questionSubmitId = questionSubmit.getId();
+        // 发送消息
+        myMessageProducer.sendMessage("code_exchange", "my_routingKey", String.valueOf(questionSubmitId));
         // 执行判题服务
-        CompletableFuture.runAsync(()->{
-            judgeFeignClient.doJudge(questionSubmitId);
-        });
+//        CompletableFuture.runAsync(()->{
+//            judgeFeignClient.doJudge(questionSubmitId);
+//        });
         return questionSubmitId;
     }
 
@@ -150,8 +156,6 @@ public class QuestionSubmitServiceImpl extends ServiceImpl<QuestionSubmitMapper,
         questionSubmitVOPage.setRecords(questionSubmitVOList);
         return questionSubmitVOPage;
     }
-
-
 
 
 }
