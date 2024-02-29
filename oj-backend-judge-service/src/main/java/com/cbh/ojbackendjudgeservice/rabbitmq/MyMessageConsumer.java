@@ -33,7 +33,10 @@ public class MyMessageConsumer {
             judgeService.doJudge(questionSubmitId);
             channel.basicAck(deliveryTag, false);
         } catch (IOException e) {
-            channel.basicNack(deliveryTag, false, true);
+            // 消息处理失败
+            channel.basicNack(deliveryTag, false, false);
+            // 无限重新入队
+//            channel.basicNack(deliveryTag, false, true);
         }
     }
 }

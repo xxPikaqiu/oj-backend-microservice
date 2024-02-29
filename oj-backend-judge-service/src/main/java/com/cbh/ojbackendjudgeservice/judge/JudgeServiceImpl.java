@@ -36,7 +36,7 @@ public class JudgeServiceImpl implements JudgeService {
     @Resource
     private JudgeManager judgeManager;
 
-    @Value("${codeSandbox.type}")
+    @Value("${codeSandbox.type:example}")
     private String type;
 
 
